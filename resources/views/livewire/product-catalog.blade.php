@@ -72,7 +72,9 @@
                     @empty
                         <div class="col-span-full">No product found</div>
                     @endforelse
-
+                </div>
+                <div>
+                    {{ $products->links() }}
                 </div>
             </div>
         </div>
