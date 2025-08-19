@@ -25,26 +25,30 @@ class ProductCatalog extends Component
     // Filter dan kontrol data
     public array $selectCollections = []; // Menyimpan koleksi terpilih
     public string $search = '';           // Kata kunci pencarian produk
-    public string $sortBy = 'newest';     // Opsi sorting: newest, price_asc, price_desc
+    public string $sortBy = 'newest';     // Opsi sorting: newest, latest, price_asc, price_desc
 
+    // Lifecycle hook Livewire: dijalankan saat komponen pertama kali di-mount
     public function mount()
     {
-        $this->validate();
+        $this->validate(); // Validasi awal ketika komponen dimuat
     }
+
+    // Aturan validasi untuk properti komponen
     protected function rules()
     {
         return [
-            'selectCollections' => 'array',
-            'selectCollections.*' => 'integer|exists:tags,id',
-            'search' => 'nullable|string|min:3|max:30',
-            'sortBy' => 'in:newest,latest,price_asc,price_desc',
+            'selectCollections' => 'array',                        // Harus array
+            'selectCollections.*' => 'integer|exists:tags,id',    // Setiap item harus integer dan ada di tabel tags
+            'search' => 'nullable|string|min:3|max:30',           // Kata kunci opsional, panjang 3-30 karakter
+            'sortBy' => 'in:newest,latest,price_asc,price_desc',  // Hanya boleh salah satu dari opsi ini
         ];
     }
+
     // Dipanggil saat filter diterapkan agar kembali ke halaman pertama
     public function applyFilter()
     {
-        $this->validate();
-        $this->resetPage();
+        $this->validate(); // Validasi input sebelum apply filter
+        $this->resetPage(); // Reset ke halaman pertama agar data sesuai filter baru
     }
 
     // Reset semua filter ke kondisi default
@@ -54,19 +58,26 @@ class ProductCatalog extends Component
         $this->search = '';            // Kosongkan pencarian
         $this->sortBy = 'newest';      // Reset sorting ke default
 
-        $this->resetErrorBag();
+        $this->resetErrorBag();        // Bersihkan pesan error validasi
         $this->resetPage();            // Kembali ke halaman pertama
     }
 
     public function render()
     {
+        // Siapkan data default kosong untuk produk & koleksi
         $collection = ProductCollectionData::collect([]);
         $products = ProductData::collect([]);
+
+        // Jika ada error validasi, tampilkan view dengan data kosong
         if ($this->getErrorBag()->isNotEmpty()) {
             return view('livewire.product-catalog', compact('products', 'collection'));
         }
+
         // Ambil semua tag bertipe 'collection' dan hitung jumlah produk di setiap koleksi
-        $result_collection = Tag::query()->withType('collection')->withCount('products')->get();
+        $result_collection = Tag::query()
+            ->withType('collection')
+            ->withCount('products')
+            ->get();
 
         // Query dasar untuk produk
         $query = Product::query();
@@ -111,4 +122,5 @@ class ProductCatalog extends Component
         return view('livewire.product-catalog', compact('products', 'collection'));
     }
 }
+
 
