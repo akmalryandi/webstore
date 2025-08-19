@@ -17,7 +17,7 @@ class ProductCatalog extends Component
 
     // Properti untuk sinkronisasi dengan query string agar state filter tetap ada saat refresh
     public $queryString = [
-        'selectCollection' => ['except' => []], // Simpan filter koleksi di URL
+        'selectCollections' => ['except' => []], // Simpan filter koleksi di URL
         'search' => ['except' => []],           // Simpan kata kunci pencarian di URL
         'sortBy' => ['except' => 'newest'],     // Simpan urutan sorting di URL (default newest)
     ];
@@ -27,9 +27,23 @@ class ProductCatalog extends Component
     public string $search = '';           // Kata kunci pencarian produk
     public string $sortBy = 'newest';     // Opsi sorting: newest, price_asc, price_desc
 
+    public function mount()
+    {
+        $this->validate();
+    }
+    protected function rules()
+    {
+        return [
+            'selectCollections' => 'array',
+            'selectCollections.*' => 'integer|exists:tags,id',
+            'search' => 'nullable|string|min:3|max:30',
+            'sortBy' => 'in:newest,latest,price_asc,price_desc',
+        ];
+    }
     // Dipanggil saat filter diterapkan agar kembali ke halaman pertama
     public function applyFilter()
     {
+        $this->validate();
         $this->resetPage();
     }
 
@@ -39,11 +53,18 @@ class ProductCatalog extends Component
         $this->selectCollections = []; // Hapus filter koleksi
         $this->search = '';            // Kosongkan pencarian
         $this->sortBy = 'newest';      // Reset sorting ke default
+
+        $this->resetErrorBag();
         $this->resetPage();            // Kembali ke halaman pertama
     }
 
     public function render()
     {
+        $collection = ProductCollectionData::collect([]);
+        $products = ProductData::collect([]);
+        if ($this->getErrorBag()->isNotEmpty()) {
+            return view('livewire.product-catalog', compact('products', 'collection'));
+        }
         // Ambil semua tag bertipe 'collection' dan hitung jumlah produk di setiap koleksi
         $result_collection = Tag::query()->withType('collection')->withCount('products')->get();
 
