@@ -12,6 +12,7 @@
     <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon-16x16.png') }}">
     <link rel="manifest" href="/site.webmanifest">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    {{-- <script src="//unpkg.com/alpinejs" defer></script> --}}
     @stack('head')
 </head>
 
