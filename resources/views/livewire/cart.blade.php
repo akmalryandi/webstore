@@ -24,6 +24,8 @@
                                         <p class="px-3 py-2 mt-1 text-xl font-semibold text-black dark:text-black">
                                             {{ $item->product()->price_formatted }}
                                         </p>
+
+                                        <livewire:cart-item-remove wire:key="cart-item-remove-{{ $item->sku }}" :product="$item->product()" />
                                     </div>
                                 </div>
                             </div>
