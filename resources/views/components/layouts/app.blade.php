@@ -18,6 +18,7 @@
 
 <body>
     <x-navigation />
+    <x-alert />
 
     {{ $slot }}
 

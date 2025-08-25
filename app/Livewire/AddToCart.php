@@ -44,6 +44,8 @@ class AddToCart extends Component
             price: $this->price,
             weight: $this->weight
         ));
+
+        session()->flash('success', 'Produk berhasil ditambahkan ke keranjang');
         $this->dispatch('cart-updated');
 
         return redirect()->route('cart');
