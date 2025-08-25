@@ -2,9 +2,11 @@
 
 namespace App\Livewire;
 
+use App\Actions\ValidateCartStock;
 use Illuminate\Support\Collection;
 use Livewire\Component;
 use App\Contract\CartServiceInterface;
+use Dotenv\Exception\ValidationException;
 
 class Cart extends Component
 {
@@ -31,6 +33,19 @@ class Cart extends Component
     {
         // Mengambil daftar item di keranjang dan mengubahnya menjadi Laravel Collection
         return $cart->all()->items->toCollection();
+    }
+
+    public function checkout()
+    {
+        // Lakukan proses checkout di sini
+        try {
+            // Lakukan pengecekan apakah ada item di keranjang
+            ValidateCartStock::run();
+            return redirect()->route('checkout');
+        } catch (ValidationException $e) {
+            session()->flash('error', $e->getMessage());
+            return redirect()->route('cart');
+        }
     }
 
     // Method render() yang wajib ada di setiap komponen Livewire

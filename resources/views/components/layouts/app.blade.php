@@ -18,7 +18,7 @@
 
 <body>
     <x-navigation />
-    <x-alert />
+    {{-- <x-alert /> --}}
 
     {{ $slot }}
 
