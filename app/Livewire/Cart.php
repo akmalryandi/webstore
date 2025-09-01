@@ -37,15 +37,8 @@ class Cart extends Component
 
     public function checkout()
     {
-        // Lakukan proses checkout di sini
-        try {
-            // Lakukan pengecekan apakah ada item di keranjang
-            ValidateCartStock::run();
-            return redirect()->route('checkout');
-        } catch (ValidationException $e) {
-            session()->flash('error', $e->getMessage());
-            return redirect()->route('cart');
-        }
+        return redirect()->route('checkout');
+
     }
 
     // Method render() yang wajib ada di setiap komponen Livewire
