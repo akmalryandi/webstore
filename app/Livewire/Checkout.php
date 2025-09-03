@@ -5,6 +5,7 @@ namespace App\Livewire;
 
 use App\Data\CartData;
 use App\Data\RegionData;
+use App\Services\RegionQueryService;
 use Livewire\Component;
 
 use Illuminate\Support\Facades\Gate;
@@ -77,42 +78,28 @@ class Checkout extends Component
         return $cart->all();
     }
 
-    public function getRegionsProperty() : DataCollection
+    public function getRegionsProperty(RegionQueryService $query_service) : DataCollection
     {
-        $data = [
-            [
-                'code' => '001',
-                'province' => 'Jawa Barat',
-                'city' => 'Kota Bandung',
-                'district' => 'district',
-                'sub_district' => 'sub district',
-                'postal_code' => '42111',
-            ],
-            [
-                'code' => '002',
-                'province' => 'Jawa Barat 1',
-                'city' => 'Kota Bandung 1',
-                'district' => 'district 1',
-                'sub_district' => 'sub district 1',
-                'postal_code' => '42112',
-            ],
-        ];
+
 
         if(!data_get($this->region_selector, 'keyword')) {
             $data = [];
+            return new DataCollection(RegionData::class, []);
         }
 
-        return new DataCollection(RegionData::class, $data);
+        return $query_service->searchRegionByName(
+            data_get($this->region_selector, 'keyword')
+        );
     }
 
-    public function getRegionProperty() : ?RegionData
+    public function getRegionProperty(RegionQueryService $query_service) : ?RegionData
     {
         $region_selected = data_get($this->region_selector, 'region_selected');
         if(!$region_selected) {
             return null;
         }
 
-        return $this->regions->toCollection()->first(fn (RegionData $region) => $region->code === $region_selected);
+        return $query_service->searchRegionByCode($region_selected);
     }
 
     public function updatedRegionSelectorRegionSelected($value)
