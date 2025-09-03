@@ -16,10 +16,10 @@ class RegionData extends Data
         public string $province,
         public string $city,
         public string $district,
-        public string $sub_distric,
+        public string $sub_district,
         public string $postal_code,
         public string $country = 'indonesia'
     ) {
-        $this->label = "$sub_distric, $district, $city, $province, $postal_code";
+        $this->label = "$sub_district, $district, $city, $province, $postal_code";
     }
 }

@@ -52,29 +52,48 @@
                             class="@error('data.shipping_line') border-red-600 @enderror py-1.5 sm:py-2 px-3 pe-11 block w-full border-gray-200 shadow-2xs sm:text-sm rounded-lg focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
                             placeholder="Street Address">
                         @error('data.shipping_line')
-                            <p class="mt-2 text-xs text-red-600" id="hs-validation-name-error-helper">{{ $message }}</p>
+                            <p class="mt-2 text-xs text-red-600" id="hs-validation-name-error-helper">{{ $message }}
+                            </p>
                         @enderror
 
                         <div>
                             <div x-data="{ open: false }" class="relative w-full">
-                                <input type="text" @focus="open = true" @click.outside="open = false"
+                                <input type="text" wire:model.live.debounce.500ms="region_selector.keyword"
+                                    @focus="open = true" @click.outside="open = false"
                                     class="py-1.5 sm:py-2 px-3 pe-11 block w-full border-gray-200 shadow-2xs sm:text-sm rounded-lg focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
                                     placeholder="Cari Lokasi">
 
-                                <ul class="absolute z-10 w-full mt-1 overflow-y-auto bg-white border border-gray-200 rounded-b-lg max-h-60"
-                                    x-show="open">
-                                    <li class="p-2 cursor-pointer hover:bg-gray-100">
-                                        Cikutra, Kota Bandung
-                                    </li>
-                                </ul>
+                                @if ($this->regions->toCollection()->isNotEmpty())
+                                    <ul class="absolute z-10 w-full mt-1 overflow-y-auto bg-white border border-gray-200 rounded-b-lg max-h-60"
+                                        x-show="open">
+                                        @foreach ($this->regions as $region)
+                                            <li class="p-2 cursor-pointer hover:bg-gray-100">
+                                                <label for="region-{{ $region->code }}"
+                                                    class="w-full inline-block cursor-pointer">
+                                                    <input type="radio" id="region-{{ $region->code }}"
+                                                        value="{{ $region->code }}"
+                                                        wire:model.live="region_selector.region_selected"
+                                                        class="sr-only" />
+                                                    {{ $region->label }}
+                                                </label>
 
-                                <p class="mt-2 text-sm text-gray-600">
-                                    Lokasi Dipilih
-                                    <strong>Cikutra, Kota Bandung, 401900</strong>
-                                </p>
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                @endif
+
+                                @if ($this->region)
+                                    <p class="mt-2 text-sm text-gray-600">
+                                        Lokasi Dipilih
+                                        <strong>{{ $this->region->label }}</strong>
+                                    </p>
+                                @endif
                             </div>
-                            <p class="mt-2 text-xs text-red-600" id="hs-validation-name-error-helper">
-                                Pesan Error</p>
+                            @error('data.destination_region_code')
+                                <p class="mt-2 text-xs text-red-600" id="hs-validation-name-error-helper">
+                                    {{ $message }}</p>
+                            @enderror
+
                         </div>
                     </div>
                 </div>
