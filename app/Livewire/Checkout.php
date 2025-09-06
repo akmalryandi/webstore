@@ -4,16 +4,18 @@ namespace App\Livewire;
 
 
 use App\Data\CartData;
-use App\Data\RegionData;
-use App\Services\RegionQueryService;
+use App\Models\Region;
 use Livewire\Component;
+use App\Data\RegionData;
 
+use App\Data\ShippingData;
+use Illuminate\Support\Number;
+use Dflydev\DotAccessData\Data;
+use App\Services\RegionQueryService;
 use Illuminate\Support\Facades\Gate;
 use App\Contract\CartServiceInterface;
-use App\Models\Region;
-use Dflydev\DotAccessData\Data;
-use Illuminate\Support\Number;
 use Spatie\LaravelData\DataCollection;
+use App\Services\ShippingMethodService;
 
 class Checkout extends Component
 {
@@ -106,6 +108,25 @@ class Checkout extends Component
     {
         data_set($this->data, 'destination_region_code', $value);
     }
+
+    /** @return DataCollection<ShippingData> */
+    public function getShippingMethodsProperty(
+        RegionQueryService $region_query,
+        ShippingMethodService $shipping_service
+    ): DataCollection{
+        if(!data_get($this->data, 'destination_region_code')) {
+            return new DataCollection(ShippingData::class, []);
+        }
+
+        $origin_code = config('shipping.shipping_origin_code');
+
+        return $shipping_service->getShippingMethods(
+            $region_query->searchRegionByCode($origin_code),
+            $region_query->searchRegionByCode(data_get($this->data, 'destination_region_code')),
+            $this->cart
+        );
+    }
+
 
     public function placeAnOrder()
     {
