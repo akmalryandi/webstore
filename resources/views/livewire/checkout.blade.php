@@ -64,11 +64,11 @@
                                         class="py-1.5 sm:py-2 px-3 pe-11 block w-full border-gray-200 shadow-2xs sm:text-sm rounded-lg focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
                                         placeholder="Cari Lokasi">
 
-                                    <span wire:loading wire.target="region_selector.keyword"
+                                    <div wire:loading wire.target="region_selector.keyword"
                                         class="absolute top-3 right-3 animate-spin inline-block size-4 border-3 border-current border-t-transparent text-blue-500 rounded-full"
                                         role="status" aria-label="loading">
                                         <span class="sr-only">Loading...</span>
-                                    </span>
+                                    </div>
                                 </div>
 
                                 @if ($this->regions->toCollection()->isNotEmpty())
@@ -110,6 +110,10 @@
                     Shipping Method
                 </label>
 
+                @error('data.shipping_hash')
+                    <p class="mt-2 text-xs text-red-600" id="hs-validation-name-error-helper">
+                        {{ $message }}</p>
+                @enderror
 
                 <div class="mt-2 space-y-3">
                     {{-- <div class="w-full text-start relative flex">
@@ -220,10 +224,18 @@
                         </li>
                     </ul>
                     <!-- End List Group -->
-                    <button type="button" wire:click="placeAnOrder()"
+                    <button type="button" wire:click="placeAnOrder"
                         class="cursor-pointer inline-flex items-center justify-center w-full px-3 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-lg gap-x-2 hover:bg-blue-700 focus:outline-hidden focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none">
-                        Place an Order
+
+                        <span wire:loading.remove wire:target="placeAnOrder">
+                            Place an Order
+                        </span>
+
+                        <span wire:loading wire:target="placeAnOrder">
+                            Loading...
+                        </span>
                     </button>
+
                 </div>
             </div>
         </div>

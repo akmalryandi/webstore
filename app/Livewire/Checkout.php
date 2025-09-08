@@ -5,6 +5,7 @@ namespace App\Livewire;
 
 use App\Data\CartData;
 use App\Models\Region;
+use App\Rules\ValidShippingHash;
 use Livewire\Component;
 use App\Data\RegionData;
 
@@ -62,8 +63,8 @@ class Checkout extends Component
             'data.email' => ['required','email','min:3','max:255'],
             'data.phone' => ['required','min:7','max:255'],
             'data.shipping_line' => ['required','min:10','max:255'],
-            'data.destination_region_code' => ['required'],
-            'data.shipping_hash' => ['required']
+            'data.destination_region_code' => ['required','exists:regions,code'],
+            'data.shipping_hash' => ['required', new ValidShippingHash()]
         ];
     }
 
