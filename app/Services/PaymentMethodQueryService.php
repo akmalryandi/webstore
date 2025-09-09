@@ -15,7 +15,7 @@ class PaymentMethodQueryService
 {
     protected array $drivers = [];
 
-    public function __construct(array $drivers)
+    public function __construct()
     {
         $this->drivers = [
             new OfflinePaymentDriver(),
