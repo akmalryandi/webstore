@@ -33,6 +33,8 @@ interface CartServiceInterface
      * Mengambil semua data item yang ada di keranjang.
      * @return CartData Objek yang berisi seluruh data keranjang (misalnya daftar item dan total harga).
      */
+
+    public function clear(): void;
     public function all(): CartData;
 }
 

@@ -82,6 +82,15 @@ class SessionCartService implements CartServiceInterface
     }
 
     /**
+     * Menghapus semua item dari keranjang.
+     */
+    public function clear(): void
+    {
+        // Hapus data keranjang dari session
+        Session::forget($this->session_key);
+    }
+
+    /**
      * Mengambil satu item dari keranjang berdasarkan SKU.
      * Mengembalikan CartItemData atau null jika tidak ditemukan.
      */

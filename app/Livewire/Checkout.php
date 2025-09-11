@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Gate;
 use App\Contract\CartServiceInterface;
 use App\Data\CheckoutData;
 use App\Rules\ValidPaymentMethodHash;
+use App\Services\CheckoutService;
 use Spatie\LaravelData\DataCollection;
 use App\Services\ShippingMethodService;
 use Illuminate\Support\Collection;
@@ -186,7 +187,9 @@ class Checkout extends Component
 
         data_set($this->data, 'payment_method_hash', $value);
     }
-    public function placeAnOrder()
+    public function placeAnOrder(
+        CartServiceInterface $cart
+    )
     {
         $validated = $this->validate();
 
@@ -207,7 +210,12 @@ class Checkout extends Component
             'shipping' => $shipping_method,
             'payment' => $payment_method
         ]);
-        dd($checkout);
+
+        $service = app(CheckoutService::class);
+        $sales_order = $service->makeAnOrder($checkout);
+        $cart->clear();
+
+        return redirect()->route('order-confirmed', $sales_order->trx_id);
     }
     public function render()
     {
