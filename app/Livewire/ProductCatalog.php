@@ -44,6 +44,14 @@ class ProductCatalog extends Component
         ];
     }
 
+     protected function validationAttributes()
+    {
+        return [
+            'selectCollections' => 'Collections',
+            'sortBy' => 'Sort By',
+        ];
+    }
+
     // Dipanggil saat filter diterapkan agar kembali ke halaman pertama
     public function applyFilter()
     {

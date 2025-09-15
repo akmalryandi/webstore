@@ -83,6 +83,19 @@ class Checkout extends Component
         ];
     }
 
+    protected function validationAttributes()
+    {
+        return [
+            'data.full_name' => 'Name',
+            'data.email' => 'Email',
+            'data.phone' => 'Phone',
+            'data.address_line' => 'Address',
+            'data.destination_region_code' => 'Region',
+            'data.shipping_hash' => 'Shipping',
+            'data.payment_method_hash' => 'Payment Method'
+        ];
+    }
+
     public function calculateTotal()
     {
         data_set($this->summaries, 'sub_total', $this->cart->total);
