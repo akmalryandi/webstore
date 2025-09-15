@@ -8,6 +8,7 @@ use App\Data\PaymentData;
 use App\Data\SalesOrderData;
 use Spatie\LaravelData\DataCollection;
 use App\Contract\PaymentDriverInterface;
+use App\Models\SalesOrder;
 
 class OfflinePaymentDriver implements PaymentDriverInterface
 {
@@ -27,17 +28,22 @@ class OfflinePaymentDriver implements PaymentDriverInterface
                 'driver' => $this->driver,
                 'method' => 'bca-bank-transfer',
                 'label' => 'Bank Transfer BCA',
-                'payload' => [
-                    'account_number' => '123456789',
-                    'account_name' => 'Akmal Ryandi'
-                ]
+                // 'payload' => [
+                //     'account_number' => '123456789',
+                //     'account_name' => 'Akmal Ryandi'
+                // ]
             ])
         ], DataCollection::class);
     }
 
     public function process(SalesOrderData $sales_order)
     {
-        // TODO: Implement process() method.
+        SalesOrder::where('trx_id', $sales_order->trx_id)
+            ->update([
+                'payment_payload' => [
+                    'key' => 'value'
+                ]
+                ]);
     }
 
     public function shouldShowPayNowButton(SalesOrderData $sales_order): bool

@@ -13,7 +13,8 @@ class SalesOrder extends Model
     protected $with = ['items'];
     protected $casts = [
         'status' => SalesOrderState::class,
-        'payment_payload' => 'json'
+        'payment_payload' => 'array'
+        // 'payment_payload' => 'json'
     ];
 
     public function items(): HasMany
