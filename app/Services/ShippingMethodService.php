@@ -22,7 +22,7 @@ class ShippingMethodService
     {
         $this->drivers = [
             new OfflineShippingDriver(),
-            new APIKurirShippingDriver()
+            // new APIKurirShippingDriver()
         ];
     }
 

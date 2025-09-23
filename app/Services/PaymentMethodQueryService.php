@@ -7,10 +7,11 @@ namespace App\Services;
 use App\Data\PaymentData;
 use App\Data\SalesOrderData;
 use App\Models\PaymentMethod;
+use App\Data\SalesPaymentData;
 use App\Data\PaymentMethodData;
 use Spatie\LaravelData\DataCollection;
 use App\Contract\PaymentDriverInterface;
-use App\Data\SalesPaymentData;
+use App\Drivers\Payment\MootaPaymentDriver;
 use App\Drivers\Payment\OfflinePaymentDriver;
 
 class PaymentMethodQueryService
@@ -21,6 +22,7 @@ class PaymentMethodQueryService
     {
         $this->drivers = [
             new OfflinePaymentDriver(),
+            new MootaPaymentDriver()
         ];
     }
 

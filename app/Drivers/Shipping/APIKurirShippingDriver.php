@@ -20,7 +20,7 @@ class APIKurirShippingDriver implements ShippingDriverInterface
 
     public function __construct()
     {
-        $this->driver = 'Sandbox';
+        $this->driver = 'apikurir';
     }
 
     /** @return DataCollection<ShippingServiceData> */
@@ -31,7 +31,7 @@ class APIKurirShippingDriver implements ShippingDriverInterface
                 'driver' => $this->driver,
                 'code' => 'jne-reguler',
                 'courier' => 'JNE',
-                'service' => 'Reguler',
+                'service' => 'Regular',
             ],
             [
                 'driver' => $this->driver,
@@ -43,7 +43,7 @@ class APIKurirShippingDriver implements ShippingDriverInterface
                 'driver' => $this->driver,
                 'code' => 'ninja-express-reguler',
                 'courier' => 'Ninja Xpress',
-                'service' => 'Reguler',
+                'service' => 'Regular',
             ]
         ], DataCollection::class);
     }
@@ -54,7 +54,8 @@ class APIKurirShippingDriver implements ShippingDriverInterface
         CartData $cart,
         ShippingServiceData $shipping_services
     ): ?ShippingData {
-        $response = Http::timeout(120)->withBasicAuth(
+        // $response = Http::timeout(120)->withBasicAuth(
+        $response = Http::withBasicAuth(
             config('shipping.api_kurir.username'),
             config('shipping.api_kurir.password')
         )->post('https://sandbox.apikurir.id/shipments/v1/open-api/rates', [
