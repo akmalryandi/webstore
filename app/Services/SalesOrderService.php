@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Models\Product;
 use App\Models\SalesOrder;
 use App\Data\SalesOrderData;
 use App\Data\SalesOrderItemData;
-use App\Events\ShippingReceiptNumberUpdateEvent;
-use App\Models\Product;
-// use Illuminate\Container\Attributes\DB;
+use App\States\SalesOrder\Pending;
 use Illuminate\Support\Facades\DB;
+use App\States\SalesOrder\Progress;
+use App\Events\ShippingReceiptNumberUpdateEvent;
 
 class SalesOrderService
 {
@@ -49,5 +50,16 @@ class SalesOrderService
                 ]);
             });
         });
+    }
+
+    public function approvePaymentUsingTrxID(string $trx_id, float $total) : void
+    {
+        $sales_order = SalesOrder::query()
+            ->where('trx_id', $trx_id)
+            ->where('total', $total)
+            ->where('status', Pending::class)
+            ->first();
+
+        $sales_order->status->transitionTo(Progress::class);
     }
 }
